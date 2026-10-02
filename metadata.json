@@ -1,0 +1,6 @@
+{
+  "name": "SkySphere 3D",
+  "description": "Immersive 3D animated weather forecast with interactive 3D weather models and daily dashboard.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

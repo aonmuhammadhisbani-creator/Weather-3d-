@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">SkySphere 3D</string>
+    <string name="weather_3d_stage">3D Weather Stage</string>
+    <string name="daily_dashboard">Daily Forecast</string>
+    <string name="search_city_hint">Search city or location…</string>
+    <string name="feels_like">Feels like</string>
+    <string name="hourly_forecast">Hourly Forecast (24h)</string>
+    <string name="extended_forecast">7-Day Extended Forecast</string>
+    <string name="weather_details">Atmospheric Metrics</string>
+    <string name="interactive_3d">Touch &amp; Drag to Rotate 3D</string>
+</resources>
