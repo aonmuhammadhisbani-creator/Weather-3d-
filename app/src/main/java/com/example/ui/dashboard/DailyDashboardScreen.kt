@@ -55,6 +55,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.data.model.WeatherCondition
+import com.example.ui.engine3d.FamousLandmark
 import com.example.ui.engine3d.Weather3DStage
 import com.example.ui.viewmodel.WeatherViewModel
 
@@ -80,6 +81,7 @@ fun DailyDashboardScreen(
     val currentCondition = viewModel.getCurrentCondition()
     val current = weather?.current
     val daily = weather?.daily
+    val landmark = FamousLandmark.forLocation(selectedCity?.country, selectedCity?.name)
 
     // Temperature calculations
     val currentTempC = if (selectedHourIndex > 0) {
@@ -287,6 +289,7 @@ fun DailyDashboardScreen(
                         ) {
                             Weather3DStage(
                                 condition = currentCondition,
+                                landmark = landmark,
                                 modifier = Modifier.fillMaxSize(),
                                 windSpeedKmh = current?.windSpeed ?: 15.0,
                                 autoSpin = true,
@@ -333,6 +336,24 @@ fun DailyDashboardScreen(
                                 style = MaterialTheme.typography.bodyMedium,
                                 fontWeight = FontWeight.SemiBold,
                                 color = Color.White.copy(alpha = 0.85f)
+                            )
+                        }
+
+                        Spacer(modifier = Modifier.height(8.dp))
+
+                        // Famous Landmark Info Pill
+                        Box(
+                            modifier = Modifier
+                                .clip(RoundedCornerShape(14.dp))
+                                .background(Color.White.copy(alpha = 0.16f))
+                                .padding(horizontal = 14.dp, vertical = 6.dp)
+                                .testTag("hero_landmark_pill")
+                        ) {
+                            Text(
+                                text = "${landmark.emoji} ${landmark.landmarkName} (${landmark.countryName})",
+                                style = MaterialTheme.typography.labelMedium,
+                                color = Color.White,
+                                fontWeight = FontWeight.SemiBold
                             )
                         }
 

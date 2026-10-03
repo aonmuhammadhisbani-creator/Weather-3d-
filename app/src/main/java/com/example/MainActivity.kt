@@ -21,6 +21,7 @@ import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -30,6 +31,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import com.example.ui.dashboard.DailyDashboardScreen
+import com.example.ui.engine3d.FamousLandmark
 import com.example.ui.studio3d.WeatherStudioScreen
 import com.example.ui.theme.SkySphereTheme
 import com.example.ui.viewmodel.WeatherViewModel
@@ -128,8 +130,11 @@ fun MainWeatherApp(viewModel: WeatherViewModel) {
                     )
                 }
                 AppScreen.STUDIO_3D -> {
+                    val currentCity by viewModel.selectedCity.collectAsState()
+                    val landmark = FamousLandmark.forLocation(currentCity?.country, currentCity?.name)
                     WeatherStudioScreen(
                         currentCondition = viewModel.getCurrentCondition(),
+                        initialLandmark = landmark,
                         onBackToDashboard = { currentScreen = AppScreen.DASHBOARD }
                     )
                 }

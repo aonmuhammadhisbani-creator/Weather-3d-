@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.RestartAlt
 import androidx.compose.material3.FilledIconButton
@@ -46,6 +47,7 @@ import kotlin.math.sin
 fun Weather3DStage(
     condition: WeatherCondition,
     modifier: Modifier = Modifier,
+    landmark: FamousLandmark = FamousLandmark.GLOBAL_ICONIC_CITY,
     windSpeedKmh: Double = 15.0,
     timeOfDayProgress: Float = 0.5f, // 0.0 (midnight) to 0.5 (noon) to 1.0
     autoSpin: Boolean = true,
@@ -120,6 +122,7 @@ fun Weather3DStage(
             Condition3DModels.render(
                 drawScope = this,
                 condition = condition,
+                landmark = landmark,
                 state = sceneState,
                 rotPitch = rotPitch,
                 rotYaw = rotYaw,
@@ -146,6 +149,24 @@ fun Weather3DStage(
                     fontSize = 10.sp,
                     fontWeight = FontWeight.Bold,
                     letterSpacing = 1.sp
+                )
+            }
+
+            // Famous Landmark Identification Badge at bottom-start
+            Box(
+                modifier = Modifier
+                    .align(Alignment.BottomStart)
+                    .padding(12.dp)
+                    .clip(RoundedCornerShape(12.dp))
+                    .background(Color.Black.copy(alpha = 0.50f))
+                    .padding(horizontal = 10.dp, vertical = 6.dp)
+                    .testTag("landmark_badge")
+            ) {
+                Text(
+                    text = "${landmark.emoji} ${landmark.landmarkName} • ${landmark.countryName}",
+                    color = Color.White,
+                    fontSize = 11.sp,
+                    fontWeight = FontWeight.SemiBold
                 )
             }
 

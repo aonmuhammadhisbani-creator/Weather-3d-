@@ -60,15 +60,18 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.data.model.WeatherCondition
 import com.example.ui.audio.WeatherAudioSynthesizer
+import com.example.ui.engine3d.FamousLandmark
 import com.example.ui.engine3d.Weather3DStage
 
 @Composable
 fun WeatherStudioScreen(
     currentCondition: WeatherCondition,
+    initialLandmark: FamousLandmark = FamousLandmark.MOUNT_FUJI_PAGODA,
     onBackToDashboard: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     var selectedCondition by remember { mutableStateOf(currentCondition) }
+    var selectedLandmark by remember { mutableStateOf(initialLandmark) }
     var autoSpin by remember { mutableStateOf(true) }
     var windSpeedSlider by remember { mutableFloatStateOf(24f) }
     var timeOfDaySlider by remember { mutableFloatStateOf(0.5f) } // 0.0 to 1.0
@@ -97,6 +100,7 @@ fun WeatherStudioScreen(
         // Full screen 3D Weather Model Stage
         Weather3DStage(
             condition = selectedCondition,
+            landmark = selectedLandmark,
             modifier = Modifier.fillMaxSize(),
             windSpeedKmh = windSpeedSlider.toDouble(),
             timeOfDayProgress = timeOfDaySlider,
@@ -170,7 +174,58 @@ fun WeatherStudioScreen(
                 .navigationBarsPadding()
                 .padding(bottom = 76.dp) // space for bottom navigation
         ) {
+            // Famous Landmark Selector Chips
+            Text(
+                text = "WORLD LANDMARK",
+                style = MaterialTheme.typography.labelSmall,
+                color = Color.White.copy(alpha = 0.85f),
+                fontWeight = FontWeight.Bold,
+                letterSpacing = 1.sp,
+                modifier = Modifier.padding(horizontal = 16.dp, vertical = 2.dp)
+            )
+            LazyRow(
+                modifier = Modifier.fillMaxWidth(),
+                contentPadding = PaddingValues(horizontal = 16.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                items(FamousLandmark.values()) { landmark ->
+                    val isSelected = landmark == selectedLandmark
+                    FilterChip(
+                        selected = isSelected,
+                        onClick = { selectedLandmark = landmark },
+                        label = {
+                            Text(
+                                text = "${landmark.emoji} ${landmark.landmarkName}",
+                                color = if (isSelected) Color.Black else Color.White,
+                                fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal
+                            )
+                        },
+                        colors = FilterChipDefaults.filterChipColors(
+                            selectedContainerColor = Color(0xFF90CAF9),
+                            containerColor = Color.Black.copy(alpha = 0.45f)
+                        ),
+                        border = FilterChipDefaults.filterChipBorder(
+                            enabled = true,
+                            selected = isSelected,
+                            borderColor = Color.White.copy(alpha = 0.4f),
+                            selectedBorderColor = Color(0xFF90CAF9)
+                        ),
+                        shape = RoundedCornerShape(16.dp)
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.height(8.dp))
+
             // Condition Selector Chips Row
+            Text(
+                text = "WEATHER CONDITION",
+                style = MaterialTheme.typography.labelSmall,
+                color = Color.White.copy(alpha = 0.85f),
+                fontWeight = FontWeight.Bold,
+                letterSpacing = 1.sp,
+                modifier = Modifier.padding(horizontal = 16.dp, vertical = 2.dp)
+            )
             LazyRow(
                 modifier = Modifier.fillMaxWidth(),
                 contentPadding = PaddingValues(horizontal = 16.dp),
@@ -217,6 +272,26 @@ fun WeatherStudioScreen(
                     )
                 ) {
                     Column(modifier = Modifier.padding(16.dp)) {
+                        // Landmark cultural snippet
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Text(
+                                text = "${selectedLandmark.emoji} ${selectedLandmark.landmarkName} (${selectedLandmark.countryName})",
+                                style = MaterialTheme.typography.titleSmall,
+                                fontWeight = FontWeight.Bold,
+                                color = Color(0xFF90CAF9)
+                            )
+                        }
+                        Text(
+                            text = selectedLandmark.culturalSnippet,
+                            style = MaterialTheme.typography.bodySmall,
+                            color = Color.White.copy(alpha = 0.8f)
+                        )
+
+                        Spacer(modifier = Modifier.height(8.dp))
+
                         Row(
                             modifier = Modifier.fillMaxWidth(),
                             verticalAlignment = Alignment.CenterVertically,

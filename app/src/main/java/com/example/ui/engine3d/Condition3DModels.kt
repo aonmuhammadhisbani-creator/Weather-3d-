@@ -245,6 +245,7 @@ object Condition3DModels {
     fun render(
         drawScope: DrawScope,
         condition: WeatherCondition,
+        landmark: FamousLandmark = FamousLandmark.GLOBAL_ICONIC_CITY,
         state: Weather3DSceneState,
         rotPitch: Float,
         rotYaw: Float,
@@ -254,41 +255,64 @@ object Condition3DModels {
     ) {
         val center = Offset(drawScope.size.width / 2f, drawScope.size.height / 2f)
 
+        // Draw sky celestial bodies (Sun / Moon / Starfield)
         when (condition) {
             WeatherCondition.CLEAR_DAY -> {
-                drawSun3D(drawScope, center, rotPitch, rotYaw, animTime, lightIntensity)
+                drawSun3D(drawScope, center + Offset(0f, -40f), rotPitch, rotYaw, animTime, lightIntensity, radiusScale = 0.9f)
             }
             WeatherCondition.CLEAR_NIGHT -> {
-                drawMoonAndStars3D(drawScope, center, state, rotPitch, rotYaw, animTime)
+                drawMoonAndStars3D(drawScope, center + Offset(0f, -40f), state, rotPitch, rotYaw, animTime, moonScale = 0.9f)
             }
             WeatherCondition.PARTLY_CLOUDY_DAY -> {
-                // Sun behind clouds with god-rays
-                drawSun3D(drawScope, center + Offset(45f, -35f), rotPitch * 0.4f, rotYaw * 0.4f, animTime, 0.85f, radiusScale = 0.7f)
-                drawClouds3D(drawScope, center, state, rotPitch, rotYaw, animTime, isDark = false, hasSunlight = true)
+                drawSun3D(drawScope, center + Offset(45f, -65f), rotPitch * 0.4f, rotYaw * 0.4f, animTime, 0.85f, radiusScale = 0.7f)
             }
             WeatherCondition.PARTLY_CLOUDY_NIGHT -> {
-                drawMoonAndStars3D(drawScope, center + Offset(45f, -35f), state, rotPitch * 0.4f, rotYaw * 0.4f, animTime, moonScale = 0.7f)
-                drawClouds3D(drawScope, center, state, rotPitch, rotYaw, animTime, isDark = true, hasSunlight = false)
+                drawMoonAndStars3D(drawScope, center + Offset(45f, -65f), state, rotPitch * 0.4f, rotYaw * 0.4f, animTime, moonScale = 0.7f)
+            }
+            else -> { /* Cloud decks / storms / fog */ }
+        }
+
+        // Draw the 3D Famous Landmark on the horizon
+        Landmark3DModels.renderLandmark(
+            drawScope = drawScope,
+            landmark = landmark,
+            center = center,
+            rotPitch = rotPitch,
+            rotYaw = rotYaw,
+            condition = condition,
+            animTime = animTime,
+            lightningIntensity = state.lightningIntensity
+        )
+
+        // Draw weather atmospheric systems on top (clouds, rain, snow, lightning, fog, wind)
+        when (condition) {
+            WeatherCondition.CLEAR_DAY -> { /* pure sky & sun */ }
+            WeatherCondition.CLEAR_NIGHT -> { /* pure night & moon */ }
+            WeatherCondition.PARTLY_CLOUDY_DAY -> {
+                drawClouds3D(drawScope, center + Offset(0f, -45f), state, rotPitch, rotYaw, animTime, isDark = false, hasSunlight = true)
+            }
+            WeatherCondition.PARTLY_CLOUDY_NIGHT -> {
+                drawClouds3D(drawScope, center + Offset(0f, -45f), state, rotPitch, rotYaw, animTime, isDark = true, hasSunlight = false)
             }
             WeatherCondition.OVERCAST -> {
-                drawClouds3D(drawScope, center, state, rotPitch, rotYaw, animTime, isDark = true, hasSunlight = false)
+                drawClouds3D(drawScope, center + Offset(0f, -45f), state, rotPitch, rotYaw, animTime, isDark = true, hasSunlight = false)
             }
             WeatherCondition.FOG -> {
                 drawFog3D(drawScope, center, rotPitch, rotYaw, animTime)
             }
             WeatherCondition.LIGHT_RAIN -> {
-                drawClouds3D(drawScope, center + Offset(0f, -30f), state, rotPitch * 0.5f, rotYaw * 0.5f, animTime, isDark = false, hasSunlight = true)
+                drawClouds3D(drawScope, center + Offset(0f, -45f), state, rotPitch * 0.5f, rotYaw * 0.5f, animTime, isDark = false, hasSunlight = true)
                 drawRain3D(drawScope, center, state, rotPitch, rotYaw, animTime, isHeavy = false)
             }
             WeatherCondition.HEAVY_RAIN -> {
-                drawClouds3D(drawScope, center + Offset(0f, -40f), state, rotPitch * 0.5f, rotYaw * 0.5f, animTime, isDark = true, hasSunlight = false)
+                drawClouds3D(drawScope, center + Offset(0f, -45f), state, rotPitch * 0.5f, rotYaw * 0.5f, animTime, isDark = true, hasSunlight = false)
                 drawRain3D(drawScope, center, state, rotPitch, rotYaw, animTime, isHeavy = true)
             }
             WeatherCondition.THUNDERSTORM -> {
                 drawThunderstorm3D(drawScope, center, state, rotPitch, rotYaw, animTime)
             }
             WeatherCondition.SNOW -> {
-                drawClouds3D(drawScope, center + Offset(0f, -40f), state, rotPitch * 0.5f, rotYaw * 0.5f, animTime, isDark = true, hasSunlight = false)
+                drawClouds3D(drawScope, center + Offset(0f, -45f), state, rotPitch * 0.5f, rotYaw * 0.5f, animTime, isDark = true, hasSunlight = false)
                 drawSnow3D(drawScope, center, state, rotPitch, rotYaw, animTime)
             }
             WeatherCondition.WINDY -> {

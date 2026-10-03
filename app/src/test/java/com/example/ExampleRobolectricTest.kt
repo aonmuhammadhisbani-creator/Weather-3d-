@@ -44,4 +44,22 @@ class ExampleRobolectricTest {
         assertEquals(0f, rotated.x, 0.001f)
         assertEquals(10f, rotated.y, 0.001f)
     }
+
+    @Test
+    fun `famous landmark location mapping works for various countries`() {
+        val japan = com.example.ui.engine3d.FamousLandmark.forLocation("Japan", "Tokyo")
+        assertEquals(com.example.ui.engine3d.FamousLandmark.MOUNT_FUJI_PAGODA, japan)
+
+        val france = com.example.ui.engine3d.FamousLandmark.forLocation("France", "Paris")
+        assertEquals(com.example.ui.engine3d.FamousLandmark.EIFFEL_TOWER, france)
+
+        val usa = com.example.ui.engine3d.FamousLandmark.forLocation("United States", "New York")
+        assertEquals(com.example.ui.engine3d.FamousLandmark.STATUE_OF_LIBERTY_SKYLINE, usa)
+
+        val uae = com.example.ui.engine3d.FamousLandmark.forLocation("United Arab Emirates", "Dubai")
+        assertEquals(com.example.ui.engine3d.FamousLandmark.BURJ_KHALIFA, uae)
+
+        val uk = com.example.ui.engine3d.FamousLandmark.forLocation("United Kingdom", "London")
+        assertEquals(com.example.ui.engine3d.FamousLandmark.BIG_BEN_WESTMINSTER, uk)
+    }
 }
